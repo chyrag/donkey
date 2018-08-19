@@ -1,0 +1,23 @@
+kernel:
+  image: linuxkit/kernel:4.17
+  cmdline: "console=tty0 console=ttyS0"
+init:
+  - linuxkit/init:v0.6
+  - linuxkit/runc:v0.6
+  - linuxkit/containerd:v0.6
+onboot:
+  - name: dhcpcd
+    image: linuxkit/dhcpcd:v0.6
+    binds:
+      - /run:/etc
+      - /run:/run
+    command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpd.conf", "-1"]
+services:
+  - name: getty
+    image: linuxkit/getty:v0.6
+    env:
+      - INSECURE=true
+trust:
+  org:
+    - linuxkit
+    - library
